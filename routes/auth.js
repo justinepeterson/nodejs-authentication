@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 const User = require("../models/User");
 const Joi = require("@hapi/joi");
 
-const schema = Joi.object({
+const registerSchema = Joi.object({
   name: Joi.string()
     .min(6)
     .required(),
@@ -15,8 +15,17 @@ const schema = Joi.object({
     .required()
 });
 
+const loginSchema = Joi.object({
+  email: Joi.string()
+    .min(6)
+    .required(),
+  password: Joi.string()
+    .min(6)
+    .required()
+});
+
 router.post("/register", async (req, res) => {
-  const value = await schema.validate(req.body);
+  const value = await registerSchema.validate(req.body);
   if (value.error) return res.status(400).send(value.error.details[0].message);
 
   const emailExist = await User.findOne({ email: req.body.email });
@@ -37,5 +46,22 @@ router.post("/register", async (req, res) => {
     res.status(400).send(error);
   }
 });
+
+router.post("/login", async (req, res) => {
+  const value = await loginSchema.validate(req.body);
+  if (value.error) return res.status(400).send(value.error.details[0].message);
+
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) return res.status(400).send("Email or password is not correct");
+
+  const validPassword = await bcrypt.compare(req.body.password, user.password)
+
+  if(!validPassword) return res.status(400).send('Password is not valid');
+
+  
+  res.send('Logged in')
+  
+});
+
 
 module.exports = router;
