@@ -2,6 +2,8 @@ const router = require("express").Router();
 const bcrypt = require('bcryptjs')
 const User = require("../models/User");
 const Joi = require("@hapi/joi");
+const jwt = require('jsonwebtoken');
+
 
 const registerSchema = Joi.object({
   name: Joi.string()
@@ -58,8 +60,12 @@ router.post("/login", async (req, res) => {
 
   if(!validPassword) return res.status(400).send('Password is not valid');
 
-  
-  res.send('Logged in')
+  //create and assign token
+  const token = jwt.sign({_id:user._id}, process.env.SECRET_TOKEN)
+
+  res.header('auth-token',token)
+
+  res.send(`Logged in with token ${token}`)
   
 });
 

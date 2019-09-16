@@ -11,11 +11,16 @@ mongoose.connect(process.env.DB_CONNECT,{ useNewUrlParser: true ,useUnifiedTopol
 app.use(express.json())
 
 const authRoutes = require('./routes/auth')
+const postRoutes = require('./routes/posts')
+
+app.use('/api/posts',postRoutes)
 app.use('/api/user/',authRoutes)
 
-app.use('/',(req,res)=>{
-    res.send('Hello mundo')
-})
+
+
+// app.use('/',(req,res)=>{
+//     res.send('Hello mundo')
+// })
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT,()=>console.log(`App running on port ${PORT}`))
