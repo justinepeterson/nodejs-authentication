@@ -1,3 +1,4 @@
+//hapi/joi validations
 const Joi = require("@hapi/joi");
 
 const registerValidation = (data) =>{

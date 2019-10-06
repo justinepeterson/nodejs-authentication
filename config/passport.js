@@ -1,3 +1,4 @@
+//passport validation and authorizetion file
 const LocalStrategy = require("passport-local").Strategy;
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
